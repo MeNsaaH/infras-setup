@@ -65,5 +65,6 @@ spec:
 {{- if $app.createNamespace|default true}}
       - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
 {{- end }}
+      - SkipDryRunOnMissingResource=true
 {{- end }}
 {{ end }}

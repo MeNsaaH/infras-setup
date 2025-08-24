@@ -27,5 +27,11 @@ inputs =  {
       username = "mensaah"
       password = local.secrets.mensaah-github.PAT
     }
+    azana-gitlab= {
+      url      = "https://gitlab.com/azana1/"
+      type     = "git"
+      username = "mensaah"
+      password = local.secrets.mensaah-gitlab.PAT
+    }
   }
 }

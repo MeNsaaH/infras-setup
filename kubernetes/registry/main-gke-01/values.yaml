@@ -3,6 +3,10 @@ argocd-apps:
   server: https://kubernetes.default.svc
   apps:
     - name: azana
-      path: kubernetes/apps/azana
+      path: k8s
+      repoUrl: https://gitlab.com/azana1/azana-backend.git
       namespace: azana
+      helmValueFiles:
+        - values.yaml
+        - current-tag.yaml
   namespaces: []
