@@ -1,5 +1,5 @@
 argocd-apps:
-  cluster: main-gke-01
+  cluster: in-cluster
   apps:
     - name: azana
       path: kubernetes/apps/azana
