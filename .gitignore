@@ -1,0 +1,11 @@
+*.terragrunt.tf
+.terraform
+terragrunt_rendered.json
+.terraform.lock.hcl
+
+# Ignore all chart directories except the charts in the kubernetesdirectory which
+# is where our helm charts go.
+charts
+tmpcharts
+!/kubernetes/charts
+Chart.lock

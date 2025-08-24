@@ -1,0 +1,69 @@
+{{- range $app := $.Values.apps }}
+{{ $overlayPathPresent := ternary true false (contains "overlays" $app.path) }}
+{{/* }}
+if $app.kustomizeEnabled is explicitly set to false (kustomizeEnabled: false), then kustomize is not enabled
+Else If overlays exist in the path or $app.kustomizeEnabled set to true, then kustomize is enabled.
+{{*/}}
+{{ $kustomizeEnabled := ternary false (ternary true false (or $overlayPathPresent (eq $app.kustomizeEnabled true))) (eq $app.kustomizeEnabled false) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $.Values.cluster }}-{{ $app.name }}
+  namespace: argocd
+  # Add this finalizer ONLY if you want these to cascade delete.
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  {{- with $app.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  project: {{ $app.project | default "default" }}
+  source:
+    repoURL: {{ $app.repoUrl | default $.Values.repoUrl }}
+    targetRevision: {{ $app.targetRevision | default "HEAD" }}
+{{- if $app.path }}
+    path: {{ $app.path }}/{{ $.Values.cluster }}
+{{- else }}
+    path: kubernetes/apps/{{ $app.name }}/{{ $.Values.cluster }}
+{{- end }}
+
+    {{- if not $kustomizeEnabled }}
+    helm:
+      {{- if $app.helmSkipCrds }}
+      skipCrds: true
+      {{- end }}
+      {{- if $app.helmReleaseName }}
+      releaseName: {{ $app.helmReleaseName }}
+      {{- else }}
+      releaseName: {{ $app.name }}
+      {{- end }}
+      {{- if $app.helmValueFiles }}
+      valueFiles:
+      {{- $app.helmValueFiles |toYaml |nindent 6 }}
+      {{- end }}
+    {{- end }}
+  destination:
+    {{- if or $app.server $.Values.server }}
+    server: {{ $app.server | default $.Values.server }}
+    {{- else }}
+    name:  {{ $app.cluster | default $.Values.cluster }}
+    {{- end }}
+    namespace:  {{ $app.namespace }}
+
+  # Sync policy
+  syncPolicy:
+    automated:
+      prune: {{ $app.disableAutomatedSync |default true }}
+      selfHeal: {{ $app.disableAutomatedSync |default true }}
+{{- if and (ne .namespace "kube-system") (ne .namespace "argocd") (ne .namespace "default") ($app.createNamespace |default true ) }}
+    syncOptions:
+{{- if $app.serverSideApply|default false }}
+      - ServerSideApply=true
+{{- end }}
+{{- if $app.createNamespace|default true}}
+      - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+{{- end }}
+{{- end }}
+{{ end }}

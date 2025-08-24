@@ -1,0 +1,19 @@
+{{- if .Values.namespaces }}
+{{- range $namespace := .Values.namespaces }}
+{{- if eq (($namespace.createNamespace|quote)| default "true"|quote) ("true"|quote) }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace.name }}
+  {{- if $namespace.labels }}
+  labels:
+    {{- toYaml $namespace.labels | nindent 4 }}
+  {{- end }}
+  {{- if $namespace.annotations }}
+  annotations:
+    {{- toYaml $namespace.annotations | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

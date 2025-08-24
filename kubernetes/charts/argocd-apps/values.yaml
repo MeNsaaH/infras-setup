@@ -1,0 +1,32 @@
+---
+repoUrl: https://github.com/mensaah/infras-setup.git
+cluster:
+server:
+
+apps: []
+#  - name: argocd # Required. Used in directory apps/{name}/{cluster}
+#    cluster: default # Optional (default: .Values.Cluster). Cluster name to install.
+#    kustomizeEnabled: Optional (default: false) if set to true, the target directory has a kustomization file. Else, it'll be treated as a helm directory.  If $app.kustomizeEnabled is explicitly set to false (kustomizeEnabled: false), then kustomize is not enabled. Else If overlays exist in the path or $app.kustomizeEnabled set to true, then kustomize is enabled.
+#    namespace: argocd # Required. Namespace to deploy app to
+#    project: # Optional (default: default) . The project to create the Argocd App within
+#    targetRevision: # Optional (default: HEAD). The target revision
+#    path: # Optional (default: <apps>/<appname>/<cluster>). The path to the resources. If specified, the path becomes `<path/<cluster>`
+#    repoUrl: # Optional (default: .Values.repoUrl)
+#    helmReleaseName: # Optional. The helm release name. defaults to the app.name
+#    helmValueFiles: # Optional. Values file relative to the Helm Chart directory
+#    - values.yaml
+#    - staging.yaml
+#    helmSkipCrds: # Optional (default: false). Skip CRDs installation on helm
+#    disableAutomatedSync: # Optional (default: false). Enable Argocd Automated Sync
+#    createNamespace: # Optional (default: true). Create Namespace if not exists
+#    serverSideApply: # Optional (default: false). Enable server-side apply
+
+namespaces: []
+# - name: some-namespace # Required. Name of namespace
+#   createNamespace: true # Optional(default: true)
+#   labels: {} # Optional
+#   annotations: {} # Optional
+# - name: new-namespace
+
+valuesRepoURL: https://github.com/mensaah/infras-setup.git
+valuesRepoTargetRevision: HEAD

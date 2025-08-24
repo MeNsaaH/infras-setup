@@ -1,0 +1,10 @@
+apiVersion: v2
+name: azana-db
+description: A Helm chart for configuring azana-db
+type: application
+version: 0.0.1
+
+dependencies:
+  - name: postgresql
+    repository:  https://charts.bitnami.com/bitnami
+    version: 16.7.26

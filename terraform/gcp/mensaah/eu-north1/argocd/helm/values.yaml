@@ -1,0 +1,6 @@
+applicationSet:
+  enabled: false
+  replicas: 0
+
+notifications:
+  enabled: false
