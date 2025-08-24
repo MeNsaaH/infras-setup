@@ -1,6 +1,7 @@
 argocd-apps:
   cluster: main-gke-01
   apps:
-    - name: azana-db
-      path: kubernetes/apps/azana-db
+    - name: azana
+      path: kubernetes/apps/azana
+      namespace: azana
   namespaces: []
