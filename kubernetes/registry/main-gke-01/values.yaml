@@ -9,4 +9,11 @@ argocd-apps:
       helmValueFiles:
         - values.yaml
         - current-tag.yaml
+    - name: cloudflared
+      path: kubernetes/apps/cloudflared
+      namespace: cloudflared
+      kustomizeEnabled: true
+    - name: sealed-secrets
+      path: kubernetes/apps/sealed-secrets
+      namespace: sealed-secrets
   namespaces: []

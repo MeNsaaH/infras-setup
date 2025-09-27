@@ -11,6 +11,7 @@ apps: []
 #    project: # Optional (default: default) . The project to create the Argocd App within
 #    targetRevision: # Optional (default: HEAD). The target revision
 #    path: # Optional (default: <apps>/<appname>/<cluster>). The path to the resources. If specified, the path becomes `<path/<cluster>`
+#    fullpath: # Optional (default: <apps>/<appname>/<cluster>). The path to the resources. If specified, the path becomes `<path`
 #    repoUrl: # Optional (default: .Values.repoUrl)
 #    helmReleaseName: # Optional. The helm release name. defaults to the app.name
 #    helmValueFiles: # Optional. Values file relative to the Helm Chart directory

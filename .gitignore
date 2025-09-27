@@ -9,3 +9,4 @@ charts
 tmpcharts
 !/kubernetes/charts
 Chart.lock
+key.txt

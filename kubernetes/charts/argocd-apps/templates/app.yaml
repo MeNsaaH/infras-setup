@@ -14,8 +14,13 @@ metadata:
   # Add this finalizer ONLY if you want these to cascade delete.
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-  {{- with $app.annotations }}
   annotations:
+  {{- if $app.path }}
+    argocd.argoproj.io/manifest-generate-paths: /{{ $app.path }}
+  {{- else }}
+    argocd.argoproj.io/manifest-generate-paths: /kubernetes/apps/{{ $app.name }}
+  {{- end }}
+  {{- with $app.annotations }}
   {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
@@ -23,11 +28,13 @@ spec:
   source:
     repoURL: {{ $app.repoUrl | default $.Values.repoUrl }}
     targetRevision: {{ $app.targetRevision | default "HEAD" }}
-{{- if $app.path }}
+  {{- if $app.path }}
     path: {{ $app.path }}/{{ $.Values.cluster }}
-{{- else }}
+  {{- else if $app.fullpath }}
+    path: {{ $app.path }}
+  {{- else }}
     path: kubernetes/apps/{{ $app.name }}/{{ $.Values.cluster }}
-{{- end }}
+  {{- end }}
 
     {{- if not $kustomizeEnabled }}
     helm:
@@ -57,14 +64,14 @@ spec:
     automated:
       prune: {{ $app.disableAutomatedSync |default true }}
       selfHeal: {{ $app.disableAutomatedSync |default true }}
-{{- if and (ne .namespace "kube-system") (ne .namespace "argocd") (ne .namespace "default") ($app.createNamespace |default true ) }}
+  {{- if and (ne .namespace "kube-system") (ne .namespace "argocd") (ne .namespace "default") ($app.createNamespace |default true ) }}
     syncOptions:
-{{- if $app.serverSideApply|default false }}
+    {{- if $app.serverSideApply|default false }}
       - ServerSideApply=true
-{{- end }}
-{{- if $app.createNamespace|default true}}
+    {{- end }}
+    {{- if $app.createNamespace|default true}}
       - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
-{{- end }}
+    {{- end }}
       - SkipDryRunOnMissingResource=true
-{{- end }}
+  {{- end }}
 {{ end }}
