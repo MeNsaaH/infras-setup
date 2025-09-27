@@ -1,24 +1,24 @@
 locals {
   regional_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
   project_vars  = read_terragrunt_config(find_in_parent_folders("project.hcl"))
-  secrets = yamldecode(sops_decrypt_file("${find_in_parent_folders("secrets.yaml")}"))
+  secrets       = yamldecode(sops_decrypt_file("${find_in_parent_folders("secrets.yaml")}"))
 }
 
-include {
-  path = find_in_parent_folders()
+include "root" {
+  path = find_in_parent_folders("root.hcl")
 }
 
 dependency "gke" {
   config_path = "../gke"
 }
 
-inputs =  {
+inputs = {
   cluster_name = "main-gke-01"
   cluster = {
-    endpoint = dependency.gke.outputs.gke.endpoint
+    endpoint       = dependency.gke.outputs.gke.endpoint
     ca_certificate = dependency.gke.outputs.gke.ca_certificate
-    cluster_id = dependency.gke.outputs.gke.cluster_id
-    name = dependency.gke.outputs.gke.name
+    cluster_id     = dependency.gke.outputs.gke.cluster_id
+    name           = dependency.gke.outputs.gke.name
   }
   repo_credential_templates = {
     mensaah-github = {
@@ -27,7 +27,7 @@ inputs =  {
       username = "mensaah"
       password = local.secrets.mensaah-github.PAT
     }
-    azana-gitlab= {
+    azana-gitlab = {
       url      = "https://gitlab.com/azana1/"
       type     = "git"
       username = "mensaah"

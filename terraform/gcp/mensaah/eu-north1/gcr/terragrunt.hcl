@@ -3,8 +3,8 @@ locals {
   project_vars  = read_terragrunt_config(find_in_parent_folders("project.hcl"))
 }
 
-include {
-  path = find_in_parent_folders()
+include "root" {
+  path = find_in_parent_folders("root.hcl")
 }
 
 inputs = {

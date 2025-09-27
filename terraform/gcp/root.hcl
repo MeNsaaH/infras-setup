@@ -9,6 +9,11 @@ engine {
   version = "v0.0.22"
 }
 
+# Use this to set terraform version at environment level
+terraform_version_constraint = "~> 1.13"
+
+terragrunt_version_constraint = "~> 0.88"
+
 generate "remote_state" {
   path      = "backend.terragrunt.tf"
   if_exists = "overwrite_terragrunt"
