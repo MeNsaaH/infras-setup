@@ -21,49 +21,6 @@ locals {
       image = {
         tag = var.image_tag
       }
-      networkPolicy = {
-        create = true
-      }
-    }
-
-    server = {
-      autoscaling = {
-        enabled = true
-      }
-      pdb = {
-        enabled      = true
-        minAvailable = 1
-      }
-    }
-
-    controller = {
-      autoscaling = {
-        enabled = true
-      }
-      pdb = {
-        enabled      = true
-        minAvailable = 1
-      }
-    }
-
-    applicationSet = {
-      autoscaling = {
-        enabled = true
-      }
-      pdb = {
-        enabled      = true
-        minAvailable = 1
-      }
-    }
-
-    repoServer = {
-      autoscaling = {
-        enabled = true
-      }
-      pdb = {
-        enabled      = true
-        minAvailable = 1
-      }
     }
 
     configs = {
