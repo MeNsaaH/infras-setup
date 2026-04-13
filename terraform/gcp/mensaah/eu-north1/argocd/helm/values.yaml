@@ -2,6 +2,10 @@ global:
   networkPolicy:
     create: true
 
+configs:
+  params:
+    server.insecure: "true"
+
 server:
   autoscaling:
     enabled: true
