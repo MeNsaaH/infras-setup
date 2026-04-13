@@ -3,7 +3,7 @@ argocd-apps:
   server: https://kubernetes.default.svc
   apps:
     - name: azana
-      path: k8s
+      path: backend/k8s
       repoUrl: https://gitlab.com/azana1/flego.git
       namespace: azana
       helmValueFiles:
