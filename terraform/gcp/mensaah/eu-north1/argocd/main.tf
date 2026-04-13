@@ -16,12 +16,14 @@ locals {
 
   # If no_auth_config has been specified, set all configs as null
   values = merge({
-    global = {
-      domain = var.argocd_url
-      image = {
-        tag = var.image_tag
-      }
-    }
+    global = merge(
+      {
+        image = {
+          tag = var.image_tag
+        }
+      },
+      var.argocd_url != null ? { domain = var.argocd_url } : {}
+    )
 
     configs = {
       # Configmaps require strings, yamlencode the map
