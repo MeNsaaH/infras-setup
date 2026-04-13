@@ -31,7 +31,7 @@ spec:
   {{- if $app.path }}
     path: {{ $app.path }}/{{ $.Values.cluster }}
   {{- else if $app.fullpath }}
-    path: {{ $app.path }}
+    path: {{ $app.fullpath }}
   {{- else }}
     path: kubernetes/apps/{{ $app.name }}/{{ $.Values.cluster }}
   {{- end }}

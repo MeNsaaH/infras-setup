@@ -12,7 +12,7 @@ variable "argocd_url" {
 
 variable "cluster" {
   description = "Cluster to deploy argocd into"
-  type = map(string)
+  type        = map(string)
 }
 
 variable "repositories" {
@@ -44,7 +44,7 @@ variable "repo_credential_templates" {
 variable "chart_version" {
   description = "version of charts"
   type        = string
-  default     = "8.3.0"
+  default     = "9.5.0"
 }
 
 variable "image_tag" {

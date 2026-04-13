@@ -13,6 +13,7 @@ dependency "gke" {
 }
 
 inputs = {
+  argocd_url   = "https://argocd.labtime.work"
   cluster_name = "main-gke-01"
   cluster = {
     endpoint       = dependency.gke.outputs.gke.endpoint
