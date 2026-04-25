@@ -17,6 +17,7 @@ grafana:
       apiVersion: 1
       datasources:
         - name: Financedash
+          uid: financedash-postgresql
           type: postgres
           url: azana-postgresql.azana:5432
           user: financedash
