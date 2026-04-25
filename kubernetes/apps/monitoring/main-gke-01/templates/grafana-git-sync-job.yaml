@@ -69,21 +69,28 @@ spec:
                   -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
                   "${GRAFANA_URL}${api_path}/${name}")
 
-                if [ "$status" = "200" ]; then
-                  echo "Updating $kind/$name..."
-                  echo "$content" | curl -sf -X PUT \
-                    -H "Content-Type: application/yaml" \
-                    -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
-                    "${GRAFANA_URL}${api_path}/${name}" \
-                    --data-binary @-
-                else
-                  echo "Creating $kind/$name (HTTP ${status})..."
-                  echo "$content" | curl -sf -X POST \
-                    -H "Content-Type: application/yaml" \
-                    -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
-                    "${GRAFANA_URL}${api_path}" \
-                    --data-binary @-
-                fi
+                case "$status" in
+                  200)
+                    echo "Updating $kind/$name..."
+                    echo "$content" | curl -sf -X PUT \
+                      -H "Content-Type: application/yaml" \
+                      -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                      "${GRAFANA_URL}${api_path}/${name}" \
+                      --data-binary @-
+                    ;;
+                  404)
+                    echo "Creating $kind/$name..."
+                    echo "$content" | curl -sf -X POST \
+                      -H "Content-Type: application/yaml" \
+                      -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                      "${GRAFANA_URL}${api_path}" \
+                      --data-binary @-
+                    ;;
+                  *)
+                    echo "Unexpected HTTP ${status} for $kind/$name, aborting"
+                    exit 1
+                    ;;
+                esac
 
                 echo "Done: $kind/$name"
               done
