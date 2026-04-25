@@ -1,5 +1,8 @@
 grafana:
   fullnameOverride: grafana
+  grafana.ini:
+    server:
+      root_url: https://grafana.labtime.work/
   admin:
     existingSecret: grafana-admin-secret
     userKey: admin-user
