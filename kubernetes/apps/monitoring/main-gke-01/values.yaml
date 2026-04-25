@@ -3,7 +3,27 @@ grafana:
   grafana.ini:
     server:
       root_url: https://grafana.labtime.work/
+    feature_toggles:
+      provisioning: true
+    provisioning:
+      repository_types: "git|github|gitlab"
   admin:
-    existingSecret: grafana-admin-secret
-    userKey: admin-user
-    passwordKey: admin-password
+    existingSecret: grafana-secret
+    userKey: ADMIN_USER
+    passwordKey: ADMIN_PASSWORD
+  envFromSecret: grafana-secret
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Financedash
+          type: postgres
+          url: azana-postgresql.azana:5432
+          user: financedash
+          database: financedash
+          secureJsonData:
+            password: ${POSTGRES_PASSWORD}
+          jsonData:
+            sslmode: disable
+            postgresVersion: 1500
+            timescaledb: false
