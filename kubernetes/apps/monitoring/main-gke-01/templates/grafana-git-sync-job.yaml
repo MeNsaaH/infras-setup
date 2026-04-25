@@ -52,10 +52,12 @@ spec:
 
                 kind=$(echo "$content" | grep "^kind:" | awk '{print $2}')
                 name=$(echo "$content" | grep "^  name:" | head -1 | awk '{print $2}')
+                namespace=$(echo "$content" | grep "^  namespace:" | head -1 | awk '{print $2}')
+                namespace=${namespace:-default}
 
                 case "$kind" in
                   Repository)
-                    api_path="/apis/provisioning.grafana.com/v0alpha1/namespaces/default/repositories"
+                    api_path="/apis/provisioning.grafana.com/v0alpha1/namespaces/${namespace}/repositories"
                     ;;
                   *)
                     echo "Unknown kind '$kind' in $f, skipping"
