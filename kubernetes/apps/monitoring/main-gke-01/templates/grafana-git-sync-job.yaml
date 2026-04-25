@@ -35,51 +35,60 @@ spec:
             - |
               set -e
               GRAFANA_URL="http://grafana.monitoring.svc.cluster.local"
-              API_PATH="/apis/provisioning.grafana.com/v0alpha1/namespaces/default/repositories"
-              REPO_NAME="grafana-dashboards"
 
-              # Wait for Grafana to be ready
               until curl -sf -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
                 "${GRAFANA_URL}/api/health" > /dev/null; do
                 echo "Waiting for Grafana..."
                 sleep 5
               done
 
-              PAYLOAD=$(printf '{
-                "apiVersion": "provisioning.grafana.com/v0alpha1",
-                "kind": "Repository",
-                "metadata": { "name": "%s" },
-                "spec": {
-                  "type": "gitlab",
-                  "gitlab": {
-                    "url": "https://gitlab.com/azana1/flego",
-                    "branch": "main",
-                    "path": "backend/k8s/dashboards",
-                    "token": "%s"
-                  },
-                  "sync": { "intervalSeconds": 60, "target": "folder" },
-                  "workflows": ["write"]
-                }
-              }' "$REPO_NAME" "$GITLAB_TOKEN")
+              for f in /provisioning/*.yaml; do
+                echo "Processing $f..."
 
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-                -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
-                "${GRAFANA_URL}${API_PATH}/${REPO_NAME}")
+                # substitute ${VAR} placeholders with values from env
+                content=$(sed \
+                  -e "s|\${GITLAB_TOKEN}|${GITLAB_TOKEN}|g" \
+                  "$f")
 
-              if [ "$STATUS" = "200" ]; then
-                echo "Repository exists, updating..."
-                curl -sf -X PUT \
-                  -H "Content-Type: application/json" \
+                kind=$(echo "$content" | grep "^kind:" | awk '{print $2}')
+                name=$(echo "$content" | grep "^  name:" | head -1 | awk '{print $2}')
+
+                case "$kind" in
+                  Repository)
+                    api_path="/apis/provisioning.grafana.com/v0alpha1/namespaces/default/repositories"
+                    ;;
+                  *)
+                    echo "Unknown kind '$kind' in $f, skipping"
+                    continue
+                    ;;
+                esac
+
+                status=$(curl -s -o /dev/null -w "%{http_code}" \
                   -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
-                  "${GRAFANA_URL}${API_PATH}/${REPO_NAME}" \
-                  -d "$PAYLOAD"
-              else
-                echo "Repository not found (HTTP ${STATUS}), creating..."
-                curl -sf -X POST \
-                  -H "Content-Type: application/json" \
-                  -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
-                  "${GRAFANA_URL}${API_PATH}" \
-                  -d "$PAYLOAD"
-              fi
+                  "${GRAFANA_URL}${api_path}/${name}")
 
-              echo "Done."
+                if [ "$status" = "200" ]; then
+                  echo "Updating $kind/$name..."
+                  echo "$content" | curl -sf -X PUT \
+                    -H "Content-Type: application/yaml" \
+                    -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                    "${GRAFANA_URL}${api_path}/${name}" \
+                    --data-binary @-
+                else
+                  echo "Creating $kind/$name (HTTP ${status})..."
+                  echo "$content" | curl -sf -X POST \
+                    -H "Content-Type: application/yaml" \
+                    -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                    "${GRAFANA_URL}${api_path}" \
+                    --data-binary @-
+                fi
+
+                echo "Done: $kind/$name"
+              done
+          volumeMounts:
+            - name: provisioning
+              mountPath: /provisioning
+      volumes:
+        - name: provisioning
+          configMap:
+            name: grafana-provisioning

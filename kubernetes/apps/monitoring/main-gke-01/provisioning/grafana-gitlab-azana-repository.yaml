@@ -9,18 +9,18 @@ metadata:
   name: grafana-dashboards
   namespace: monitoring
 spec:
+  title: Azana
   type: gitlab
   gitlab:
     url: https://gitlab.com/azana1/flego
     branch: main
     path: backend/k8s/dashboards
-    token:
-      valueFrom:
-        secretKeyRef:
-          name: grafana-secrets
-          key: gitlab-token
+    secure:
+      token: { create: "${GITLAB_TOKEN}" }
   sync:
+    enabled: true
     intervalSeconds: 60
     target: folder
   workflows:
     - write
+    - branch
