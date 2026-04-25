@@ -1,0 +1,103 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grafana-gitlab-sync-setup
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: configure
+          image: curlimages/curl:8.11.1
+          env:
+            - name: GRAFANA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: ADMIN_USER
+            - name: GRAFANA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: ADMIN_PASSWORD
+            - name: GITLAB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GITLAB_TOKEN
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              GRAFANA_URL="http://grafana.monitoring.svc.cluster.local"
+
+              until curl -sf -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                "${GRAFANA_URL}/api/health" > /dev/null; do
+                echo "Waiting for Grafana..."
+                sleep 5
+              done
+
+              for f in /provisioning/*.yaml; do
+                echo "Processing $f..."
+
+                # substitute ${VAR} placeholders with values from env
+                content=$(sed \
+                  -e "s|\${GITLAB_TOKEN}|${GITLAB_TOKEN}|g" \
+                  "$f")
+
+                kind=$(echo "$content" | grep "^kind:" | awk '{print $2}')
+                name=$(echo "$content" | grep "^  name:" | head -1 | awk '{print $2}')
+                namespace=$(echo "$content" | grep "^  namespace:" | head -1 | awk '{print $2}')
+                namespace=${namespace:-monitoring}
+
+                case "$kind" in
+                  Repository)
+                    api_path="/apis/provisioning.grafana.com/v0alpha1/namespaces/${namespace}/repositories"
+                    ;;
+                  *)
+                    echo "Unknown kind '$kind' in $f, skipping"
+                    continue
+                    ;;
+                esac
+
+                status=$(curl -s -o /dev/null -w "%{http_code}" \
+                  -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                  "${GRAFANA_URL}${api_path}/${name}")
+
+                case "$status" in
+                  200)
+                    echo "Updating $kind/$name..."
+                    echo "$content" | curl -sf -X PUT \
+                      -H "Content-Type: application/yaml" \
+                      -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                      "${GRAFANA_URL}${api_path}/${name}" \
+                      --data-binary @-
+                    ;;
+                  404)
+                    echo "Creating $kind/$name..."
+                    echo "$content" | curl -sf -X POST \
+                      -H "Content-Type: application/yaml" \
+                      -u "${GRAFANA_USER}:${GRAFANA_PASSWORD}" \
+                      "${GRAFANA_URL}${api_path}" \
+                      --data-binary @-
+                    ;;
+                  *)
+                    echo "Unexpected HTTP ${status} for $kind/$name, aborting"
+                    exit 1
+                    ;;
+                esac
+
+                echo "Done: $kind/$name"
+              done
+          volumeMounts:
+            - name: provisioning
+              mountPath: /provisioning
+      volumes:
+        - name: provisioning
+          configMap:
+            name: grafana-provisioning

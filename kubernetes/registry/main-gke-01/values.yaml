@@ -16,9 +16,9 @@ argocd-apps:
     - name: sealed-secrets
       path: kubernetes/apps/sealed-secrets
       namespace: sealed-secrets
-    - name: gitlab-runner
-      path: kubernetes/apps/gitlab-runner
-      namespace: gitlab-runner
+    # - name: gitlab-runner
+    #   path: kubernetes/apps/gitlab-runner
+    #   namespace: gitlab-runner
     - name: monitoring
       path: kubernetes/apps/monitoring
       namespace: monitoring

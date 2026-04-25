@@ -1,0 +1,26 @@
+# This is NOT a Kubernetes manifest — do not kubectl apply or add to templates/.
+# Push to Grafana via: gcx resources push --path provisioning/
+# gcx must be pointed at https://grafana.labtime.work
+#
+# Docs: https://grafana.com/docs/grafana/latest/as-code/observability-as-code/git-sync/git-sync-setup/set-up-code/
+apiVersion: provisioning.grafana.com/v0alpha1
+kind: Repository
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+spec:
+  title: Azana
+  type: gitlab
+  gitlab:
+    url: https://gitlab.com/azana1/flego
+    branch: main
+    path: backend/k8s/dashboards
+    secure:
+      token: { create: "${GITLAB_TOKEN}" }
+  sync:
+    enabled: true
+    intervalSeconds: 60
+    target: folder
+  workflows:
+    - write
+    - branch
