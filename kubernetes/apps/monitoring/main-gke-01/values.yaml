@@ -20,10 +20,10 @@ grafana:
           type: postgres
           url: azana-postgresql.azana:5432
           user: financedash
-          database: financedash
           secureJsonData:
             password: ${POSTGRES_PASSWORD}
           jsonData:
+            database: financedash
             sslmode: disable
             postgresVersion: 1500
             timescaledb: false
