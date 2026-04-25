@@ -1,4 +1,5 @@
 grafana:
+  fullnameOverride: grafana
   admin:
     existingSecret: grafana-admin-secret
     userKey: admin-user
