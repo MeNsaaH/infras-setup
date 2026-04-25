@@ -57,7 +57,7 @@ spec:
 
                 case "$kind" in
                   Repository)
-                    api_path="/apis/provisioning.grafana.com/v0alpha1/namespaces/${namespace}/repositories"
+                    api_path="/apis/provisioning.grafana.app/v0alpha1/namespaces/${namespace}/repositories"
                     ;;
                   *)
                     echo "Unknown kind '$kind' in $f, skipping"
