@@ -16,7 +16,7 @@ locals {
 
 module "gke" {
   source                               = "terraform-google-modules/kubernetes-engine/google"
-  version                              = "~>38.0"
+  version                              = "~> 44.0"
   project_id                           = var.project_id
   name                                 = "main-gke-01"
   regional                             = false
