@@ -31,7 +31,7 @@ grafana:
         - name: Tempo
           uid: tempo
           type: tempo
-          url: http://tempo:3100
+          url: http://tempo:3200
           access: proxy
           isDefault: false
           jsonData:
@@ -44,7 +44,9 @@ grafana:
 tempo:
   fullnameOverride: tempo
   tempo:
-    retention: 336h  # 14 days
+    retention: 24h  # 1 day
+    server:
+      http_listen_port: 3200
     receivers:
       otlp:
         protocols:
@@ -54,6 +56,6 @@ tempo:
             endpoint: 0.0.0.0:4318
   persistence:
     enabled: true
-    size: 10Gi
+    size: 2Gi
   service:
     type: ClusterIP
