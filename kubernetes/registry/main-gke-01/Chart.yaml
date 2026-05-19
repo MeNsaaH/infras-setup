@@ -1,0 +1,10 @@
+apiVersion: v2
+name: registry
+description: A Helm chart for configuring registry
+type: application
+version: 0.0.1
+
+dependencies:
+  - name: argocd-apps
+    repository: file://../../charts/argocd-apps
+    version: 0.0.1

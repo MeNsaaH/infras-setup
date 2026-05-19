@@ -1,0 +1,24 @@
+gitlab-runner:
+  gitlabUrl: https://gitlab.com/
+  replicas: 1
+
+  rbac:
+    create: true
+  
+  serviceAccount:
+    create: true
+  
+  runners:
+    name: main-gke-01-runner
+    #   ## The name of the secret containing runner-token and runner-registration-token
+    secret: gitlab-runner-token
+    config: |
+      [[runners]]
+        [runners.kubernetes]
+          image = "ubuntu:22.04"
+          privileged = false
+          [[runners.kubernetes.volumes.host_path]]
+            host_path = '/var/run/docker.sock'
+            mount_path = '/var/run/docker.sock'
+            name = 'docker-sock'
+            read_only = true

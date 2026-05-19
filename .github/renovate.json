@@ -1,0 +1,16 @@
+{
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    }
+  ],
+  "extends": [
+    "schedule:earlyMondays",
+    "schedule:automergeEarlyMondays"
+  ]
+}

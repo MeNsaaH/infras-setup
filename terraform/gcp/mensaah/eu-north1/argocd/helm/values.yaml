@@ -1,0 +1,38 @@
+global:
+  networkPolicy:
+    create: true
+
+configs:
+  params:
+    server.insecure: "true"
+
+server:
+  autoscaling:
+    enabled: true
+  pdb:
+    enabled: true
+    maxUnavailable: 1
+
+controller:
+  autoscaling:
+    enabled: true
+  pdb:
+    enabled: true
+    maxUnavailable: 1
+
+repoServer:
+  autoscaling:
+    enabled: true
+  pdb:
+    enabled: true
+    maxUnavailable: 1
+
+applicationSet:
+  enabled: false
+  replicas: 0
+
+notifications:
+  enabled: false
+
+dex:
+  enabled: false
