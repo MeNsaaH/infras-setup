@@ -28,3 +28,32 @@ grafana:
             sslmode: disable
             postgresVersion: 1500
             timescaledb: false
+        - name: Tempo
+          uid: tempo
+          type: tempo
+          url: http://tempo:3100
+          access: proxy
+          isDefault: false
+          jsonData:
+            httpMethod: GET
+            nodeGraph:
+              enabled: true
+            search:
+              hide: false
+
+tempo:
+  fullnameOverride: tempo
+  tempo:
+    retention: 336h  # 14 days
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+  persistence:
+    enabled: true
+    size: 10Gi
+  service:
+    type: ClusterIP
