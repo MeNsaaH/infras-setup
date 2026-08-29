@@ -1,6 +1,6 @@
 locals {
   regional_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
-  project_vars  = read_terragrunt_config(find_in_parent_folders("project.hcl"))
+  account_vars  = read_terragrunt_config(find_in_parent_folders("account.hcl"))
   secrets       = yamldecode(sops_decrypt_file("${find_in_parent_folders("secrets.yaml")}"))
 }
 
