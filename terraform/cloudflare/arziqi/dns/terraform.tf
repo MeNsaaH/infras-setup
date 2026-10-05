@@ -7,6 +7,6 @@ terraform {
   }
 }
 
-# CLOUDFLARE_API_TOKEN from the environment; needs Zone | DNS | Edit on
-# arziqi.com. See ../../README.md.
+# CLOUDFLARE_API_TOKEN from the environment; needs Zone | DNS | Edit and
+# Zone | Zone Settings | Edit on arziqi.com. See ../../README.md.
 provider "cloudflare" {}

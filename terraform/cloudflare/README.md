@@ -17,7 +17,7 @@ export CLOUDFLARE_API_TOKEN=...
 | Stack | Owns |
 |---|---|
 | `arziqi/inbound-email` | R2 bucket + lifecycle, queues, Email Routing catch-all and address rules |
-| `arziqi/dns` | Every DNS record on the `arziqi.com` zone |
+| `arziqi/dns` | Every DNS record on the `arziqi.com` zone, plus its minimum TLS version |
 | `shared/tunnel` | The `main-gke-tunnel` (staging) and `prod-gke-tunnel` cloudflared tunnels and their ingress maps |
 
 They are separate states on purpose: the tunnel is account-scoped and serves
@@ -183,6 +183,7 @@ All 20 records on the `arziqi.com` zone, one file per purpose:
 | `dns_email_auth.tf` | apex SPF, DMARC, Cloudflare and Resend DKIM |
 | `dns_email_sending.tf` | `send.arziqi.com` MX + SPF (Amazon SES) |
 | `dns_verification.tf` | Google site verification |
+| `zone_settings.tf` | `min_tls_version` = `1.2` (a zone setting, not a record) |
 
 Each file carries the `import` blocks for its own records, so a group is
 reviewable in one place. The whole stack adopts with **19 to import, 0 to add,
