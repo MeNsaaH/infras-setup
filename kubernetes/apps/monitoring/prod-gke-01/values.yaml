@@ -1,0 +1,61 @@
+grafana:
+  fullnameOverride: grafana
+  grafana.ini:
+    server:
+      root_url: https://grafana-prod.labtime.work/
+    feature_toggles:
+      provisioning: true
+    provisioning:
+      repository_types: "git|github|gitlab"
+  admin:
+    existingSecret: grafana-secret
+    userKey: ADMIN_USER
+    passwordKey: ADMIN_PASSWORD
+  envFromSecret: grafana-secret
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Financedash
+          uid: financedash-postgresql
+          type: postgres
+          url: azana-postgresql.azana:5432
+          user: financedash
+          secureJsonData:
+            password: ${POSTGRES_PASSWORD}
+          jsonData:
+            database: financedash
+            sslmode: disable
+            postgresVersion: 1500
+            timescaledb: false
+        - name: Tempo
+          uid: tempo
+          type: tempo
+          url: http://tempo:3200
+          access: proxy
+          isDefault: false
+          jsonData:
+            httpMethod: GET
+            nodeGraph:
+              enabled: true
+            search:
+              hide: false
+
+tempo:
+  fullnameOverride: tempo
+  tempo:
+    retention: 24h  # 1 day
+    server:
+      http_listen_port: 3200
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+  persistence:
+    enabled: true
+    size: 2Gi
+  service:
+    type: ClusterIP
