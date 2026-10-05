@@ -5,6 +5,7 @@ argocd-apps:
     - name: azana
       path: backend/k8s
       repoUrl: https://gitlab.com/azana1/flego.git
+      targetRevision: staging-backend
       namespace: azana
       helmValueFiles:
         - values.yaml
