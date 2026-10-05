@@ -1,29 +1,25 @@
 argocd-apps:
-  cluster: main-gke-01
-  server: https://kubernetes.default.svc
+  cluster: prod-gke-01
   apps:
     - name: azana
       path: backend/k8s
       repoUrl: https://gitlab.com/azana1/flego.git
+      cluster: arziqi-prod-gke-01
       namespace: azana
       helmValueFiles:
         - values.yaml
         - current-tag.yaml
     - name: cloudflared
       path: kubernetes/apps/cloudflared
+      cluster: arziqi-prod-gke-01
       namespace: cloudflared
       kustomizeEnabled: true
     - name: sealed-secrets
       path: kubernetes/apps/sealed-secrets
+      cluster: arziqi-prod-gke-01
       namespace: sealed-secrets
-    # - name: gitlab-runner
-    #   path: kubernetes/apps/gitlab-runner
-    #   namespace: gitlab-runner
     - name: monitoring
       path: kubernetes/apps/monitoring
+      cluster: arziqi-prod-gke-01
       namespace: monitoring
-    - name: registry-prod
-      path: ""
-      fullpath: kubernetes/registry/prod-gke-01
-      namespace: argocd
   namespaces: []

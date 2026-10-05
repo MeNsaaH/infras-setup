@@ -9,6 +9,15 @@ include "root" {
 
 dependency "vpc" {
   config_path = "../vpc"
+
+  mock_outputs = {
+    vpc = {
+      network_name             = "main"
+      subnets_names            = ["subnet-01"]
+      subnets_secondary_ranges = [[{ range_name = "pods" }, { range_name = "services" }]]
+    }
+  }
+  mock_outputs_allowed_terraform_commands = ["validate", "init"]
 }
 
 inputs = {
