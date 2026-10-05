@@ -19,9 +19,10 @@ argocd-apps:
     # - name: gitlab-runner
     #   path: kubernetes/apps/gitlab-runner
     #   namespace: gitlab-runner
-    - name: monitoring
-      path: kubernetes/apps/monitoring
-      namespace: monitoring
+    # Disabled for now; uncomment to bring Grafana back.
+    # - name: monitoring
+    #   path: kubernetes/apps/monitoring
+    #   namespace: monitoring
     - name: registry-arziqi-prod
       path: ""
       fullpath: kubernetes/registry/arziqi-prod-gke-01

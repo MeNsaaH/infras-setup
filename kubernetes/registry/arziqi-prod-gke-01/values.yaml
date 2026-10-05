@@ -15,7 +15,8 @@ argocd-apps:
     - name: sealed-secrets
       path: kubernetes/apps/sealed-secrets
       namespace: sealed-secrets
-    - name: monitoring
-      path: kubernetes/apps/monitoring
-      namespace: monitoring
+    # Disabled for now; uncomment to bring Grafana back.
+    # - name: monitoring
+    #   path: kubernetes/apps/monitoring
+    #   namespace: monitoring
   namespaces: []
