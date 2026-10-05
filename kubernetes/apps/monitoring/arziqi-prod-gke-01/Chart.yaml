@@ -7,8 +7,8 @@ version: 0.0.1
 
 dependencies:
   - name: grafana
-    version: 13.2.7
+    version: 12.1.1
     repository: https://grafana-community.github.io/helm-charts
   - name: tempo
-    version: 3.1.0
+    version: 2.1.2
     repository: https://grafana-community.github.io/helm-charts
