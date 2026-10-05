@@ -1,0 +1,11 @@
+# Keys are backed up in password manager
+apiVersion: v2
+name: sealed-secrets
+description: A Helm chart for configuring argocd
+type: application
+version: 2.19.1
+
+dependencies:
+  - name: sealed-secrets
+    version: 2.19.1
+    repository: https://bitnami.github.io/sealed-secrets

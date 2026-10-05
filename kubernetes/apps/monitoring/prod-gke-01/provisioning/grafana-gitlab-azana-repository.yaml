@@ -1,0 +1,22 @@
+apiVersion: provisioning.grafana.app/v0alpha1
+kind: Repository
+metadata:
+  name: grafana-dashboards
+  namespace: default
+spec:
+  title: Azana
+  type: git
+  git:
+    url: https://gitlab.com/azana1/flego.git
+    branch: main
+    path: backend/k8s/dashboards
+  sync:
+    enabled: true
+    intervalSeconds: 60
+    target: folder
+  workflows:
+    - write
+    - branch
+secure:
+  token:
+    create: "${GITLAB_TOKEN}"

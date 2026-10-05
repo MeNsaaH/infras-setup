@@ -13,3 +13,14 @@ output "public_hostnames" {
 
   description = "Every hostname this tunnel answers for. Each needs a matching CNAME in its own zone."
 }
+
+output "prod_tunnel_id" {
+  value       = cloudflare_zero_trust_tunnel_cloudflared.prod.id
+  description = "Target for CNAMEs of the form <prod_tunnel_id>.cfargotunnel.com."
+}
+
+output "prod_tunnel_token" {
+  value       = data.cloudflare_zero_trust_tunnel_cloudflared_token.prod.token
+  sensitive   = true
+  description = "Connector token for the prod cloudflared Deployment; seal it as tunnel-token."
+}

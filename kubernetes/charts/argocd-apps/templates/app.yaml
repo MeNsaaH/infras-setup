@@ -17,6 +17,8 @@ metadata:
   annotations:
   {{- if $app.path }}
     argocd.argoproj.io/manifest-generate-paths: /{{ $app.path }}
+  {{- else if $app.fullpath }}
+    argocd.argoproj.io/manifest-generate-paths: /{{ $app.fullpath }}
   {{- else }}
     argocd.argoproj.io/manifest-generate-paths: /kubernetes/apps/{{ $app.name }}
   {{- end }}

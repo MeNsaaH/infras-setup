@@ -18,7 +18,7 @@ export CLOUDFLARE_API_TOKEN=...
 |---|---|
 | `arziqi/inbound-email` | R2 bucket + lifecycle, queues, Email Routing catch-all and address rules |
 | `arziqi/dns` | Every DNS record on the `arziqi.com` zone |
-| `shared/tunnel` | The `main-gke-tunnel` cloudflared tunnel and its ingress map |
+| `shared/tunnel` | The `main-gke-tunnel` (staging) and `prod-gke-tunnel` cloudflared tunnels and their ingress maps |
 
 They are separate states on purpose: the tunnel is account-scoped and serves
 three domains, DNS changes are frequent and low-risk, and the inbound-email
@@ -173,12 +173,12 @@ recovery window for a forwarded alert that failed to ingest.
 
 ## `arziqi/dns`
 
-All 19 records on the `arziqi.com` zone, one file per purpose:
+All 20 records on the `arziqi.com` zone, one file per purpose:
 
 | File | Records |
 |---|---|
 | `dns_web.tf` | apex, `www`, `staging` (Netlify), `product-feedback` (Vercel) |
-| `dns_api.tf` | `api.arziqi.com` → the cloudflared tunnel |
+| `dns_api.tf` | `api.arziqi.com` → the prod tunnel, `api-staging.arziqi.com` → the staging tunnel |
 | `dns_email_routing.tf` | apex + `inbound` MX, `inbound` SPF — **Cloudflare-owned** |
 | `dns_email_auth.tf` | apex SPF, DMARC, Cloudflare and Resend DKIM |
 | `dns_email_sending.tf` | `send.arziqi.com` MX + SPF (Amazon SES) |
@@ -201,17 +201,20 @@ review; if SES is unused, those two records are the trace to clean up.
 
 ## `shared/tunnel`
 
-The cloudflared tunnel that is the **only** public ingress into the GKE
-cluster — there is no LoadBalancer or Kubernetes Ingress. Every request to
-`api.arziqi.com`, including the inbound-email webhook, arrives through it.
+The cloudflared tunnels that are the **only** public ingress into the GKE
+clusters — there is no LoadBalancer or Kubernetes Ingress. Every request to
+`api.arziqi.com`, including the inbound-email webhook, arrives through
+`prod-gke-tunnel`; `api-staging.arziqi.com` arrives through `main-gke-tunnel`.
 
 | File | Contents |
 |---|---|
-| `tunnel.tf` | the tunnel object |
-| `ingress.tf` | the ordered hostname → in-cluster service map |
+| `tunnel.tf` | the staging tunnel object |
+| `ingress.tf` | the staging ordered hostname → in-cluster service map |
+| `tunnel_prod.tf` | the prod tunnel, its ingress map, and its connector token |
 
-The connector Deployment and its sealed token live in
-`infra/kubernetes/apps/cloudflared/main-gke-01`; this stack is the other half.
+The connector Deployments and their sealed tokens live in
+`infra/kubernetes/apps/cloudflared/main-gke-01` and `…/prod-gke-01`; this stack
+is the other half. The prod token is the sensitive output `prod_tunnel_token`.
 
 **Adopt only, never recreate.** The connector token is derived from the tunnel,
 so replacing it invalidates the sealed `tunnel-token` Secret and takes the

@@ -11,7 +11,13 @@ variable "zone_name" {
 variable "tunnel_id" {
   type        = string
   description = <<-EOT
-    cloudflared tunnel that api.<zone_name> is a CNAME to. The tunnel itself and
-    its ingress rules live in ../../shared/tunnel; only the DNS side is here.
+    Staging cloudflared tunnel that api-staging.<zone_name> is a CNAME to. The
+    tunnels and their ingress rules live in ../../shared/tunnel; only the DNS
+    side is here.
   EOT
+}
+
+variable "prod_tunnel_id" {
+  type        = string
+  description = "cloudflared tunnel for prod-gke-01 that api.<zone_name> is a CNAME to."
 }

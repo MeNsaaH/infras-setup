@@ -31,8 +31,30 @@ inputs = {
       service  = "http://grafana.monitoring:80"
     },
     {
+      # Kept until the DNS record moves to the prod tunnel and prod answers;
+      # remove it in a follow-up apply after that.
       hostname = "api.arziqi.com"
       service  = "http://azana-web.azana:8080"
+    },
+    {
+      hostname = "api-staging.arziqi.com"
+      service  = "http://azana-web.azana:8080"
+    },
+    {
+      service = "http_status:404"
+    },
+  ]
+
+  prod_tunnel_name = "prod-gke-tunnel"
+
+  prod_ingress_rules = [
+    {
+      hostname = "api.arziqi.com"
+      service  = "http://azana-web.azana:8080"
+    },
+    {
+      hostname = "grafana-prod.labtime.work"
+      service  = "http://grafana.monitoring:80"
     },
     {
       service = "http_status:404"

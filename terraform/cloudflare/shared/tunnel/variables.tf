@@ -40,3 +40,21 @@ variable "ingress_rules" {
     error_message = "The last ingress rule must be the catch-all: a service with no hostname."
   }
 }
+
+variable "prod_tunnel_name" {
+  type        = string
+  description = "Name of the tunnel fronting prod-gke-01."
+}
+
+variable "prod_ingress_rules" {
+  type = list(object({
+    hostname = optional(string)
+    service  = string
+  }))
+  description = "Ordered hostname -> origin map for the prod tunnel. The last rule must be the catch-all."
+
+  validation {
+    condition     = length(var.prod_ingress_rules) > 0 && try(var.prod_ingress_rules[length(var.prod_ingress_rules) - 1].hostname, null) == null
+    error_message = "The last ingress rule must be the catch-all: a service with no hostname."
+  }
+}

@@ -1,0 +1,14 @@
+# Keys are backed up in password manager
+apiVersion: v2
+name: monitoring
+description: A Helm chart for monitoring
+type: application
+version: 0.0.1
+
+dependencies:
+  - name: grafana
+    version: 12.1.1
+    repository: https://grafana-community.github.io/helm-charts
+  - name: tempo
+    version: 2.1.2
+    repository: https://grafana-community.github.io/helm-charts
