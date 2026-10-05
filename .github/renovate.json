@@ -10,8 +10,9 @@
     }
   ],
   "extends": [
-    "schedule:earlyMondays",
-    "schedule:automergeEarlyMondays"
+    "schedule:earlyMondays"
   ],
-  "minimumReleaseAge": "14 days"
+  "minimumReleaseAge": "14 days",
+  "internalChecksAsSuccess": true,
+  "dependencyDashboard": true
 }
