@@ -4,6 +4,7 @@ namespace: cloudflared
 
 resources:
   - deployment.yaml
+  - sealed-secret.yaml
 
 labels:
   - pairs:
