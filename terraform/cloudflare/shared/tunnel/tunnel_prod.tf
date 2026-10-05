@@ -1,5 +1,5 @@
 # Created here, unlike main-gke-tunnel which was adopted. Its connector token is
-# sealed into infra/kubernetes/apps/cloudflared/prod-gke-01 by hand.
+# sealed into infra/kubernetes/apps/cloudflared/arziqi-prod-gke-01 by hand.
 resource "cloudflare_zero_trust_tunnel_cloudflared" "prod" {
   account_id = var.account_id
   name       = var.prod_tunnel_name

@@ -213,7 +213,7 @@ clusters — there is no LoadBalancer or Kubernetes Ingress. Every request to
 | `tunnel_prod.tf` | the prod tunnel, its ingress map, and its connector token |
 
 The connector Deployments and their sealed tokens live in
-`infra/kubernetes/apps/cloudflared/main-gke-01` and `…/prod-gke-01`; this stack
+`infra/kubernetes/apps/cloudflared/main-gke-01` and `…/arziqi-prod-gke-01`; this stack
 is the other half. The prod token is the sensitive output `prod_tunnel_token`.
 
 **Adopt only, never recreate.** The connector token is derived from the tunnel,

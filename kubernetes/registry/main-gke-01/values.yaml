@@ -22,8 +22,8 @@ argocd-apps:
     - name: monitoring
       path: kubernetes/apps/monitoring
       namespace: monitoring
-    - name: registry-prod
+    - name: registry-arziqi-prod
       path: ""
-      fullpath: kubernetes/registry/prod-gke-01
+      fullpath: kubernetes/registry/arziqi-prod-gke-01
       namespace: argocd
   namespaces: []
