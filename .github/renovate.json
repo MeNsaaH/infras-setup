@@ -12,5 +12,6 @@
   "extends": [
     "schedule:earlyMondays",
     "schedule:automergeEarlyMondays"
-  ]
+  ],
+  "minimumReleaseAge": "14 days"
 }
